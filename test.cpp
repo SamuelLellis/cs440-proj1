@@ -8,7 +8,7 @@ int main(){
 
 //cout<<"This is the Main Function\n";
 
-test_macro();
+test_macro(int);
 
 return 0;
 

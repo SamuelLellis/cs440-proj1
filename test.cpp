@@ -4,11 +4,12 @@
 
 using namespace std;
 
+TEST_MACRO(int)
+
 int main(){
 
 //cout<<"This is the Main Function\n";
 
-test_macro(int);
 
 return 0;
 

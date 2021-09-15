@@ -8,18 +8,18 @@
 
 using namespace std;
 
-#define test_macro(Type){ \
+
+#define TEST_MACRO(Type)  \
     struct Type##_Container{  \
-        Type * Type##_container = (Type *)(malloc(sizeof(Type)*10));    \
-        int Type##_container_size;  \
-        int Type##_container_head;   \
-        int Type##_container_tail;    \
-    };                   \
-        int getSize(Type##_Container con) \
-        {   \
-            return (sizeof(con.Type##_container))/(sizeof(con.Type##_container[0])); \
-        }                   \
-}                        \
+        Type * Type##_container;    \
+        int container_size;  \
+        int container_head;   \
+        int container_tail;    \
+        }; \
+				\
+    int Type##_getSize(Type##_Container con){                    \
+        return con.container_size;               \
+    }					\
 
 
 

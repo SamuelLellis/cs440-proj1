@@ -18,7 +18,7 @@ using namespace std;
         int container_tail;                                          \
         int (*size)(Type##_Container* con);                          \
         bool (*empty)(Type##_Container* con);                       \
-                                                                      \
+        Type (*at)(Type##_Container* con, int index);                \
     };                                                                \
 				                                      \
     int Type##_getSize(Type##_Container* con){                         \
@@ -35,6 +35,20 @@ using namespace std;
         return true;                                  \
     }                                                 \
                                                       \
+    Type Type##_indexAt(Type##_Container* con, int index){             \
+        if(!(con->container_size <= index)){                              \
+            for(int iter = 0; iter < con->container_size; iter++){        \
+                if(iter == index){                                        \
+                    return con->Type##_container[iter];                   \
+                }                                                         \
+            }                                                             \
+        }                                                                 \
+        return 0;                                                         \
+    }                                                                   \
+                                                                       \
+                                                                       \
+                                                                       \
+                                                      \
     void Deque_##Type##_ctor(Type##_Container* con, unsigned int (*pFunc)(unsigned int)){       \
         con->container_size = 0;                                                          \
         con->container_numElements = 0;                                                   \
@@ -42,6 +56,7 @@ using namespace std;
         con->container_tail = 0;                                                          \
         con->size = &Type##_getSize;                                                      \
         con->empty = &Type##_checkEmpty;                                                      \
+        con->at = &Type##_indexAt;                                                        \
     };                                                                                    \
 
 

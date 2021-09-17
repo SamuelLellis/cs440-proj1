@@ -6,10 +6,17 @@ using namespace std;
 
 TEST_MACRO(int)
 
+
 int main(){
 
-//cout<<"This is the Main Function\n";
-
+    int_Container test;
+    Deque_int_ctor(&test,0);
+    //cout<<test.container_head;
+    //cout<<test.container_tail;
+    //test.int_container = (int *)malloc(sizeof(int)*50);
+    test.container_size = 5;
+    cout<<test.size(&test);
+    //cout<<test.container_size;
 
 return 0;
 

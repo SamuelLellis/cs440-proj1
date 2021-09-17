@@ -15,7 +15,8 @@ int main(){
     //cout<<test.container_tail;
     //test.int_container = (int *)malloc(sizeof(int)*50);
     test.container_size = 5;
-    cout<<test.size(&test);
+    //cout<<test.size(&test);
+    cout<<test.empty(&test);
     //cout<<test.container_size;
 
 return 0;

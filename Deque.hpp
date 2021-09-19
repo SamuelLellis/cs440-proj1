@@ -21,7 +21,8 @@ using namespace std;
         Type (*at)(Type##_Container* con, int index);                \
         void (*push_front)(Type##_Container* con, Type element);      \
         void (*push_back)(Type##_Container* con, Type element);       \
-        void (*pop_front)(Type##_Container* con);       \
+        void (*pop_front)(Type##_Container* con);                     \
+        void (*pop_back)(Type##_Container* con);                      \
     };                                                                \
 				                                      \
     int Type##_getSize(Type##_Container* con){                         \
@@ -120,7 +121,7 @@ using namespace std;
                                                                           \
         if(con->container_numElements == 1){                              \
             con->container_head = -1;                                     \
-            con->container_head = -1;                                     \
+            con->container_tail = -1;                                     \
         }                                                                 \
                                                                           \
         else{                                                             \
@@ -131,9 +132,30 @@ using namespace std;
                 con->container_head = con->container_head + 1;            \
             }                                                             \
         }                                                                 \
+        con->container_numElements = con->container_numElements - 1;      \
     }                                                                     \
                                                                           \
                                                                           \
+                                                                          \
+    void Type##_popBack(Type##_Container* con){                           \
+        if(con->container_numElements == 0){                              \
+            return;                                                       \
+        }                                                                 \
+                                                                          \
+        if(con->container_numElements == 1){                              \
+            con->container_head = -1;                                     \
+            con->container_tail = -1;                                     \
+        }                                                                 \
+                                                                          \
+        else if(con->container_tail == 0){                                \
+            con->container_tail = con->container_size - 1;                \
+        }                                                                 \
+                                                                          \
+        else{                                                             \
+            con->container_tail = con->container_tail - 1;                \
+        }                                                                 \
+        con->container_numElements = con->container_numElements - 1;      \
+    }                                                                     \
                                                                           \
                                                                           \
                                                                           \
@@ -149,6 +171,7 @@ using namespace std;
         con->push_front = &Type##_pushFront;                                               \
         con->push_back = &Type##_pushBack;                                                \
         con->pop_front = &Type##_popFront;                                                \
+        con->pop_back = &Type##_popBack;                                                  \
     };                                                                                    \
 
 

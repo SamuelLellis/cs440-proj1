@@ -21,10 +21,15 @@ int main(){
     //cout<<test.empty(&test);
     //cout<<test.at(&test,13);
     //test.container_numElements = 10;
-    test.push_back(&test, 9);
-    test.push_back(&test,8);
-    test.push_back(&test,7);
+    test.push_back(&test, 1);
+    test.push_front(&test,2);
+    test.push_back(&test,3);
     test.pop_front(&test);
+    test.pop_back(&test);
+    //test.push_front(&test,69);
+    //test.pop_back(&test);
+    //test.pop_front(&test);
+    //test.pop_front(&test);
     //test.push_front(&test,50);
     //test.push_back(&test,6);
     //test.push_back(&test,5);

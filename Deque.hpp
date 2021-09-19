@@ -24,6 +24,8 @@ using namespace std;
         void (*pop_front)(Type##_Container* con);                     \
         void (*pop_back)(Type##_Container* con);                      \
         void (*clear)(Type##_Container* con);                         \
+        Type& (*front)(Type##_Container* con);                        \
+        Type& (*back)(Type##_Container* con);                         \
     };                                                                \
 				                                      \
     int Type##_getSize(Type##_Container* con){                         \
@@ -164,6 +166,17 @@ using namespace std;
         con->container_numElements = 0;                                   \
     }                                                                     \
                                                                           \
+    Type& Type##_getFront(Type##_Container* con){                         \
+        return con->Type##_container[con->container_head];                \
+    }                                                                     \
+                                                                          \
+    Type& Type##_getBack(Type##_Container* con){                          \
+        return con->Type##_container[con->container_tail];                \
+    }                                                                     \
+                                                                          \
+                                                                          \
+                                                                          \
+                                                                          \
                                                                           \
     void Deque_##Type##_ctor(Type##_Container* con, unsigned int (*pFunc)(unsigned int)){       \
         con->container_size = 10;                                                          \
@@ -179,6 +192,8 @@ using namespace std;
         con->pop_front = &Type##_popFront;                                                \
         con->pop_back = &Type##_popBack;                                                  \
         con->clear = &Type##_clearCon;                                                     \
+        con->front = &Type##_getFront;                                                     \
+        con->back = &Type##_getBack;                                                      \
     };                                                                                    \
 
 

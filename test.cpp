@@ -24,10 +24,13 @@ int main(){
     test.push_back(&test, 1);
     test.push_front(&test,2);
     test.push_back(&test,3);
-    test.clear(&test);
-    test.push_front(&test, 85);
-    test.push_front(&test,32);
-    test.push_back(&test,15);
+    test.push_front(&test, 69);
+    test.push_back(&test,33);
+    cout<<"\n";
+    cout<<"The back is " << test.back(&test)<<"\n";
+    //test.push_front(&test, 85);
+    ///test.push_front(&test,32);
+    ///test.push_back(&test,15);
     //test.pop_front(&test);
     //test.pop_back(&test);
     //test.push_front(&test,69);

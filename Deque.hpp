@@ -20,6 +20,7 @@ using namespace std;
         bool (*empty)(Type##_Container* con);                       \
         Type (*at)(Type##_Container* con, int index);                \
         void (*push_front)(Type##_Container* con, Type element);      \
+        void (*push_back)(Type##_Container* con, Type element);       \
     };                                                                \
 				                                      \
     int Type##_getSize(Type##_Container* con){                         \
@@ -70,7 +71,7 @@ using namespace std;
                                                                           \
         if(con->container_head == -1){                                    \
            con->container_head = 0;                                       \
-           con->container_head = 0;                                       \
+           con->container_tail = 0;                                       \
         }                                                                 \
                                                                           \
         else if (con->container_head == 0){                               \
@@ -85,17 +86,32 @@ using namespace std;
         con->container_numElements++;                                     \
     }                                                                     \
                                                                           \
+    void Type##_pushBack(Type##_Container* con, Type element){            \
+        if(con->container_size == con->container_numElements){            \
+            con->Type##_container = dynamicResize(con);                   \
+            con->container_tail = con->container_size - 1;                \
+            con->container_size = con->container_size * 2;                \
+            con->container_head = 0;                                      \
+        }                                                                  \
                                                                           \
-\
-\
-\
-\
-\
-\
-\
-\
-\
-\
+        if(con->container_head == -1){                                    \
+            con->container_head = 0;                                      \
+            con->container_tail = 0;                                      \
+        }                                                                 \
+                                                                          \
+        else if (con->container_tail == con->container_size - 1){         \
+            con->container_tail = 0;                                      \
+        }                                                                 \
+                                                                          \
+        else{                                                             \
+            con->container_tail = con->container_tail + 1;                \
+        }                                                                 \
+                                                                          \
+        con->Type##_container[con->container_tail] = element;             \
+        con->container_numElements++;                                     \
+                                                                          \
+    }                                                                      \
+                                                                          \
 \
     void Deque_##Type##_ctor(Type##_Container* con, unsigned int (*pFunc)(unsigned int)){       \
         con->container_size = 10;                                                          \
@@ -107,6 +123,7 @@ using namespace std;
         con->empty = &Type##_checkEmpty;                                                      \
         con->at = &Type##_indexAt;                                                        \
         con->push_front = &Type##_pushFront;                                               \
+        con->push_back = &Type##_pushBack;                                                \
     };                                                                                    \
 
 

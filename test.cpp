@@ -24,8 +24,12 @@ int main(){
     test.push_back(&test, 1);
     test.push_front(&test,2);
     test.push_back(&test,3);
-    test.pop_front(&test);
-    test.pop_back(&test);
+    test.clear(&test);
+    test.push_front(&test, 85);
+    test.push_front(&test,32);
+    test.push_back(&test,15);
+    //test.pop_front(&test);
+    //test.pop_back(&test);
     //test.push_front(&test,69);
     //test.pop_back(&test);
     //test.pop_front(&test);

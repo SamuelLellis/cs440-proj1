@@ -19,17 +19,18 @@ using namespace std;
         int (*size)(Type##_Container* con);                          \
         bool (*empty)(Type##_Container* con);                       \
         Type (*at)(Type##_Container* con, int index);                \
+        void (*push_front)(Type##_Container* con, Type element);      \
     };                                                                \
 				                                      \
     int Type##_getSize(Type##_Container* con){                         \
-        return con->container_size;                                    \
+        return con->container_numElements;                             \
     }                                                                  \
                                                                        \
                                                                        \
                                                                        \
                                                                        \
     bool Type##_checkEmpty(Type##_Container* con){     \
-        if(con->container_size == 0){                  \
+        if(con->container_numElements == 0){                  \
             return false;                             \
         }                                             \
         return true;                                  \
@@ -44,19 +45,68 @@ using namespace std;
             }                                                             \
         }                                                                 \
         return 0;                                                         \
+    }                                                                     \
+                                                                          \
+                                                                          \
+                                                                          \
+    Type* dynamicResize(Type##_Container* con){                                                                  \
+        Type* newContainer = (Type *) (malloc(sizeof(Type) * (con->container_size * 2)));                       \
+        int newArrayIndex = 0;                                                                                  \
+        for(int iter = con->container_head; iter < (con->container_size + con->container_head); iter++){        \
+          /*  cout << con->Type##_container[(iter%con->container_size)] << " ";*/                               \
+            newContainer[newArrayIndex] = con->Type##_container[(iter%con->container_size)];                    \
+            newArrayIndex++;                                                                                    \
+        }                                                                                                       \
+        return newContainer;                                                                                    \
     }                                                                   \
                                                                        \
-                                                                       \
-                                                                       \
-                                                      \
+    void Type##_pushFront(Type##_Container* con, Type element){          \
+        if(con->container_size == con->container_numElements){           \
+            con->Type##_container = dynamicResize(con);                  \
+            con->container_tail = con->container_size - 1;                \
+            con->container_size = con->container_size * 2;                \
+            con->container_head = 0;                                      \
+        }                                                                 \
+                                                                          \
+        if(con->container_head == -1){                                    \
+           con->container_head = 0;                                       \
+           con->container_head = 0;                                       \
+        }                                                                 \
+                                                                          \
+        else if (con->container_head == 0){                               \
+            con->container_head = con->container_size - 1;                \
+        }                                                                 \
+                                                                          \
+        else{                                                             \
+            con->container_head = con->container_head - 1;                \
+        }                                                                 \
+                                                                          \
+        con->Type##_container[con->container_head] = element;             \
+        con->container_numElements++;                                     \
+    }                                                                     \
+                                                                          \
+                                                                          \
+\
+\
+\
+\
+\
+\
+\
+\
+\
+\
+\
     void Deque_##Type##_ctor(Type##_Container* con, unsigned int (*pFunc)(unsigned int)){       \
-        con->container_size = 0;                                                          \
+        con->container_size = 10;                                                          \
         con->container_numElements = 0;                                                   \
-        con->container_head = 0;                                                          \
+        con->container_head = -1;                                                          \
         con->container_tail = 0;                                                          \
+        con->Type##_container = (Type *)(malloc(sizeof(Type) * 10));                      \
         con->size = &Type##_getSize;                                                      \
         con->empty = &Type##_checkEmpty;                                                      \
         con->at = &Type##_indexAt;                                                        \
+        con->push_front = &Type##_pushFront;                                               \
     };                                                                                    \
 
 

@@ -21,6 +21,7 @@ using namespace std;
         Type (*at)(Type##_Container* con, int index);                \
         void (*push_front)(Type##_Container* con, Type element);      \
         void (*push_back)(Type##_Container* con, Type element);       \
+        void (*pop_front)(Type##_Container* con);       \
     };                                                                \
 				                                      \
     int Type##_getSize(Type##_Container* con){                         \
@@ -110,9 +111,32 @@ using namespace std;
         con->Type##_container[con->container_tail] = element;             \
         con->container_numElements++;                                     \
                                                                           \
-    }                                                                      \
+    }                                                                     \
                                                                           \
-\
+    void Type##_popFront(Type##_Container* con){                          \
+        if(con->container_numElements == 0){                              \
+            return;                                                       \
+        }                                                                 \
+                                                                          \
+        if(con->container_numElements == 1){                              \
+            con->container_head = -1;                                     \
+            con->container_head = -1;                                     \
+        }                                                                 \
+                                                                          \
+        else{                                                             \
+            if(con->container_head == con->container_size - 1){           \
+                con->container_head = 0;                                  \
+            }                                                             \
+            else{                                                         \
+                con->container_head = con->container_head + 1;            \
+            }                                                             \
+        }                                                                 \
+    }                                                                     \
+                                                                          \
+                                                                          \
+                                                                          \
+                                                                          \
+                                                                          \
     void Deque_##Type##_ctor(Type##_Container* con, unsigned int (*pFunc)(unsigned int)){       \
         con->container_size = 10;                                                          \
         con->container_numElements = 0;                                                   \
@@ -124,6 +148,7 @@ using namespace std;
         con->at = &Type##_indexAt;                                                        \
         con->push_front = &Type##_pushFront;                                               \
         con->push_back = &Type##_pushBack;                                                \
+        con->pop_front = &Type##_popFront;                                                \
     };                                                                                    \
 
 

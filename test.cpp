@@ -4,12 +4,12 @@
 
 using namespace std;
 
-TEST_MACRO(int)
+Deque_DEFINE(int)
 
 
 int main(){
 
-    int_Container test;
+    Deque_int test;
     Deque_int_ctor(&test,0);
     //test.int_container = (int *)malloc(sizeof(int)*10);
     //test.int_container[2] = 6;

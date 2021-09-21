@@ -1,12 +1,12 @@
 CC = g++
-CFLAGS = -Wall -g
+CFLAGS = -Wall -ldl -g
 
 
-test: test.o Deque.hpp
-	$(CC) $(CFLAGS) -o testing test.o
+testing: otest.o Deque.hpp
+	$(CC) $(CFLAGS) -o testing otest.o
 
-test.o: test.cpp Deque.hpp
-	$(CC) $(CFLAGS) -c test.cpp
+otest.o: otest.cpp Deque.hpp
+	$(CC) $(CFLAGS) -c otest.cpp
 
 clean:
-	rm testing test.o
+	rm testing otest.o

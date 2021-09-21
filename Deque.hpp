@@ -9,53 +9,58 @@
 using namespace std;
 
 
-#define TEST_MACRO(Type)                                             \
-    struct Type##_Container{                                         \
+#define Deque_DEFINE(Type)                                             \
+    struct Deque_##Type; \
+    struct Deque_##Type##_Iterator {                                      \
+        Deque_##Type* container;                                          \
+        int iter;                                                         \
+        void(*inc)(Deque_##Type##_Iterator* iter);                                \
+        void(*dec)(Deque_##Type##_Iterator* iter);                                \
+        Type&(*deref)(Deque_##Type##_Iterator* iter);                             \
+    };                                                                     \
+    struct Deque_##Type{                                             \
+	/*const*/ char *type_name;                                    \
         Type * Type##_container;                                     \
         int container_size;                                          \
         int container_numElements;                                   \
         int container_head;                                          \
         int container_tail;                                          \
-        int (*size)(Type##_Container* con);                          \
-        bool (*empty)(Type##_Container* con);                       \
-        Type (*at)(Type##_Container* con, int index);                \
-        void (*push_front)(Type##_Container* con, Type element);      \
-        void (*push_back)(Type##_Container* con, Type element);       \
-        void (*pop_front)(Type##_Container* con);                     \
-        void (*pop_back)(Type##_Container* con);                      \
-        void (*clear)(Type##_Container* con);                         \
-        Type& (*front)(Type##_Container* con);                        \
-        Type& (*back)(Type##_Container* con);                         \
+        int (*size)(Deque_##Type* con);                          \
+        bool (*empty)(Deque_##Type* con);                       \
+        Type& (*at)(Deque_##Type* con, int index);                \
+        void (*push_front)(Deque_##Type* con, Type element);      \
+        void (*push_back)(Deque_##Type* con, Type element);       \
+        void (*pop_front)(Deque_##Type* con);                     \
+        void (*pop_back)(Deque_##Type* con);                      \
+        void (*clear)(Deque_##Type* con);                         \
+        Type& (*front)(Deque_##Type* con);                        \
+        Type& (*back)(Deque_##Type* con);                         \
+        void (*dtor)(Deque_##Type* con);                          \
+        Deque_##Type##_Iterator(*begin)(Deque_##Type* con);               \
+        Deque_##Type##_Iterator(*end)(Deque_##Type* con);                 \
     };                                                                \
 				                                      \
-    int Type##_getSize(Type##_Container* con){                         \
+    int Type##_getSize(Deque_##Type* con){                         \
         return con->container_numElements;                             \
     }                                                                  \
                                                                        \
                                                                        \
                                                                        \
                                                                        \
-    bool Type##_checkEmpty(Type##_Container* con){     \
+    bool Type##_checkEmpty(Deque_##Type* con){     \
         if(con->container_numElements == 0){                  \
             return false;                             \
         }                                             \
         return true;                                  \
     }                                                 \
                                                       \
-    Type Type##_indexAt(Type##_Container* con, int index){             \
-        if(!(con->container_size <= index)){                              \
-            for(int iter = 0; iter < con->container_size; iter++){        \
-                if(iter == index){                                        \
-                    return con->Type##_container[iter];                   \
-                }                                                         \
-            }                                                             \
-        }                                                                 \
-        return 0;                                                         \
+    Type& Type##_indexAt(Deque_##Type* con, int index){                \
+        return con->Type##_container[(index + con->container_head) % con->container_size];     \
     }                                                                     \
                                                                           \
                                                                           \
                                                                           \
-    Type* dynamicResize(Type##_Container* con){                                                                  \
+    Type* dynamicResize(Deque_##Type* con){                                                                  \
         Type* newContainer = (Type *) (malloc(sizeof(Type) * (con->container_size * 2)));                       \
         int newArrayIndex = 0;                                                                                  \
         for(int iter = con->container_head; iter < (con->container_size + con->container_head); iter++){        \
@@ -66,7 +71,7 @@ using namespace std;
         return newContainer;                                                                                    \
     }                                                                   \
                                                                        \
-    void Type##_pushFront(Type##_Container* con, Type element){          \
+    void Type##_pushFront(Deque_##Type* con, Type element){          \
         if(con->container_size == con->container_numElements){           \
             con->Type##_container = dynamicResize(con);                  \
             con->container_tail = con->container_size - 1;                \
@@ -91,7 +96,7 @@ using namespace std;
         con->container_numElements++;                                     \
     }                                                                     \
                                                                           \
-    void Type##_pushBack(Type##_Container* con, Type element){            \
+    void Type##_pushBack(Deque_##Type* con, Type element){            \
         if(con->container_size == con->container_numElements){            \
             con->Type##_container = dynamicResize(con);                   \
             con->container_tail = con->container_size - 1;                \
@@ -117,7 +122,7 @@ using namespace std;
                                                                           \
     }                                                                     \
                                                                           \
-    void Type##_popFront(Type##_Container* con){                          \
+    void Type##_popFront(Deque_##Type* con){                          \
         if(con->container_numElements == 0){                              \
             return;                                                       \
         }                                                                 \
@@ -140,7 +145,7 @@ using namespace std;
                                                                           \
                                                                           \
                                                                           \
-    void Type##_popBack(Type##_Container* con){                           \
+    void Type##_popBack(Deque_##Type* con){                           \
         if(con->container_numElements == 0){                              \
             return;                                                       \
         }                                                                 \
@@ -160,25 +165,61 @@ using namespace std;
         con->container_numElements = con->container_numElements - 1;      \
     }                                                                     \
                                                                           \
-    void Type##_clearCon(Type##_Container* con){                          \
+    void Type##_clearCon(Deque_##Type* con){                              \
         con->container_head = -1;                                         \
         con->container_tail = -1;                                         \
         con->container_numElements = 0;                                   \
     }                                                                     \
                                                                           \
-    Type& Type##_getFront(Type##_Container* con){                         \
+    Type& Type##_getFront(Deque_##Type* con){                             \
         return con->Type##_container[con->container_head];                \
     }                                                                     \
                                                                           \
-    Type& Type##_getBack(Type##_Container* con){                          \
+    Type& Type##_getBack(Deque_##Type* con){                              \
         return con->Type##_container[con->container_tail];                \
+    }                                                                     \
+                                                                          \
+    void Type##_dtorDeque(Deque_##Type* con){                             \
+        free(con->Type##_container);                                      \
     }                                                                     \
                                                                           \
                                                                           \
                                                                           \
-                                                                          \
-                                                                          \
-    void Deque_##Type##_ctor(Type##_Container* con, unsigned int (*pFunc)(unsigned int)){       \
+                                                                           \
+    void Type##_Iterator_inc(Deque_##Type##_Iterator* iterator){           \
+        iterator->iter = iterator->iter + 1;                               \
+                                                                           \
+    }                                                                      \
+                                                                           \
+    void Type##_Iterator_dec(Deque_##Type##_Iterator* iterator){           \
+       iterator->iter = iterator->iter - 1;                                \
+    }                                                                      \
+                                                                           \
+    Type& Type##_Iterator_deref(Deque_##Type##_Iterator* iterator){                            \
+        return iterator->container->at(iterator->container, iterator->iter);          \
+    }                                                                                 \
+                                                                                      \
+   Deque_##Type##_Iterator Type##_iter_begin(Deque_##Type* con){                     \
+        Deque_##Type##_Iterator dequeIter;                                            \
+        dequeIter.iter = con->container_head;                                        \
+        dequeIter.inc = &Type##_Iterator_inc;                                        \
+        dequeIter.dec = &Type##_Iterator_dec;                                        \
+	return dequeIter;                                                             \
+    }                                                                                 \
+                                                                                      \
+    Deque_##Type##_Iterator Type##_iter_end(Deque_##Type* con){                       \
+        Deque_##Type##_Iterator dequeIter;                                            \
+        dequeIter.iter = con->container_tail+1;                                      \
+        dequeIter.inc = &Type##_Iterator_inc;                                         \
+        dequeIter.dec = &Type##_Iterator_dec;                                         \
+	return dequeIter;                                                             \
+    }                                                                                 \
+                                                                                      \
+                                                                                      \
+                                                                                      \
+                                                                                      \
+    void Deque_##Type##_ctor(Deque_##Type* con, bool(*pFunc)(const Type&, const Type&)){       \
+	con->type_name = {0};                                                                  \
         con->container_size = 10;                                                          \
         con->container_numElements = 0;                                                   \
         con->container_head = -1;                                                          \
@@ -194,6 +235,9 @@ using namespace std;
         con->clear = &Type##_clearCon;                                                     \
         con->front = &Type##_getFront;                                                     \
         con->back = &Type##_getBack;                                                      \
+        con->dtor =&Type##_dtorDeque;                                                     \
+        con->begin = &Type##_iter_begin;                                                  \
+        con->end = &Type##_iter_end;                                                      \
     };                                                                                    \
 
 

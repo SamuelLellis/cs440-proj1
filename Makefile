@@ -1,5 +1,5 @@
 CC = g++
-CFLAGS = -Wall -ldl -g
+CFLAGS = -Wall -ldl -Wextra -Wpedantic -g
 
 
 testing: otest.o Deque.hpp

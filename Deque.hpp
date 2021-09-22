@@ -20,7 +20,7 @@ using namespace std;
         Type&(*deref)(Deque_##Type##_Iterator* iter);                                                           \
     };                                                                                                          \
     struct Deque_##Type{                                                                                        \
-	/*const*/ char *type_name;                                                                              \
+	const char type_name[sizeof("Deque_"#Type)] = {"Deque_"#Type};                                                                              \
         Type * Type##_container;                                                                                \
         size_t container_size;                                                                                     \
         int container_numElements;                                                                              \
@@ -52,9 +52,9 @@ using namespace std;
                                                                                                                 \
     bool Type##_checkEmpty(Deque_##Type* con){                                                                  \
         if(con->container_numElements == 0){                                                                    \
-            return false;                                                                                       \
+            return 1;                                                                                       \
         }                                                                                                       \
-        return true;                                                                                            \
+        return 0;                                                                                            \
     }                                                                                                           \
                                                                                                                 \
     Type& Type##_indexAt(Deque_##Type* con, int index){                                                         \
@@ -204,16 +204,20 @@ using namespace std;
                                                                                       \
    Deque_##Type##_Iterator Type##_iter_begin(Deque_##Type* con){                     \
         Deque_##Type##_Iterator dequeIter;                                            \
+        dequeIter.container = con;                                                  \
         dequeIter.iter = con->container_head;                                        \
         dequeIter.inc = &Type##_Iterator_inc;                                        \
-        dequeIter.dec = &Type##_Iterator_dec;                                        \
+        dequeIter.dec = &Type##_Iterator_dec;                                         \
+        dequeIter.deref = &Type##_Iterator_deref;                                     \
 	return dequeIter;                                                             \
     }                                                                                 \
                                                                                       \
     Deque_##Type##_Iterator Type##_iter_end(Deque_##Type* con){                       \
         Deque_##Type##_Iterator dequeIter;                                            \
+        dequeIter.container = con;                                                     \
         dequeIter.iter = con->container_tail+1;                                      \
         dequeIter.inc = &Type##_Iterator_inc;                                         \
+        dequeIter.deref = &Type##_Iterator_deref;                                     \
         dequeIter.dec = &Type##_Iterator_dec;                                         \
 	return dequeIter;                                                             \
     }                                                                                 \
@@ -272,14 +276,14 @@ using namespace std;
     }                                                                                                                     \
                                                                                                                           \
     bool Deque_##Type##_Iterator_equal(Deque_##Type##_Iterator iter1, Deque_##Type##_Iterator iter2){                     \
-        if(iter1.iter == iter2.iter){                                                                                   \
+        if((iter1.iter % iter1.container->container_size) == (iter2.iter % iter2.container->container_size)){          \
             return 1;                                                                                                     \
         }                                                                                                                 \
         return 0;                                                                                                         \
     }                                                                                                                     \
                                                                                                                           \
     void Deque_##Type##_ctor(Deque_##Type* con, bool(*pFunc)(const Type&, const Type&)){       \
-	con->type_name = {0};                                                                  \
+	/*con->type_name = "Deque_"#Type;*/                                                                  \
         con->container_size = 10;                                                          \
         con->container_numElements = 0;                                                   \
         con->container_head = -1;                                                          \
